@@ -9,7 +9,7 @@ const concat = require('gulp-concat');
 
 function build_styles() {
   return gulp
-    .src('src/scss/**/*.scss')
+    .src('src/**/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(concat('all.css'))
     .pipe(gulp.dest('dist/css'))
@@ -21,7 +21,7 @@ function build_styles() {
 
 function build_scripts() {
   return gulp
-    .src('src/js/**/*.js')
+    .src('src/**/*.js')
     .pipe(concat('all.js'))
     .pipe(
       babel({
@@ -31,7 +31,8 @@ function build_scripts() {
     .pipe(gulp.dest('dist/js'))
     .pipe(rename({ suffix: '.min' }))
     .pipe(uglify())
-    .pipe(gulp.dest('dist/js'));
+    .pipe(gulp.dest('dist/js'))
+    .pipe(browserSync.stream());
 }
 
 const build = gulp.series(build_styles, build_scripts);
@@ -40,9 +41,16 @@ exports.scripts = build_scripts;
 exports.build = build;
 
 function watch() {
-  gulp.watch('src/scss/**/*.scss', build_styles);
-  gulp.watch('src/js/**/*.js', build_scripts);
-  gulp.watch('./src/js/**/*.js').on('change', browserSync.reload);
+  browserSync.init({
+    proxy: 'your-local-url.example',
+    open: 'external',
+  });
+
+  gulp.watch('src/**/*.scss', build_styles);
+  gulp.watch('src/**/*.js', build_scripts);
+  gulp.watch('./src/**/*.scss').on('change', browserSync.reload);
+  gulp.watch('./src/**/*.js').on('change', browserSync.reload);
+  gulp.watch('./**/*.php').on('change', browserSync.reload);
 }
 
 exports.watch = watch;

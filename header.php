@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html <?php language_attributes(); ?>>
 
 <head>
     <meta charset="UTF-8">
@@ -11,4 +11,7 @@
     <?php wp_head(); ?>
 </head>
 
-<body>
+<body <?php body_class(); ?>>
+    <?php
+    get_template_part('/src/template-parts/example-part/example-part');
+    ?>
